@@ -1,0 +1,43 @@
+nnd % Number of nodes 
+3
+nel % Number of elements
+3
+nne % Number of nodes per element
+2
+nodof % Number of degrees of freedom per node:
+2
+% eldof % Number of degrees of freedom per element:
+% nne*nodof
+%
+% Nodes coordinates X and Y
+%
+geom
+   0.0,    0.0 % X and Y coord. node 1
+4000.0, 4000.0 % X and Y coord. node 2
+4000.0, 6000.0 % X and X coord. node 3
+%
+% Element connectivity
+%
+1,2 % 1st and 2nd node of element 1
+2,3 % 1st and 2nd node of element 2
+1,3 % 1st and 2nd node of element 3
+%
+% Geometrical properties 
+%
+200000.0 % E of element 1
+200000.0 % E of element 2
+200000.0 % E of element 3
+2300.0 % E of element 1
+2300.0 % E of element 2
+2300.0 % E of element 3
+%
+% Boundary conditions (nnd, nodof)
+%
+1,1,0
+1,2,0
+2,2,0
+%
+% loading
+%
+3,1,1200
+3,2,0
