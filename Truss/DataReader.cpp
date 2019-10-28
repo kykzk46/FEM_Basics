@@ -3,25 +3,14 @@
 bool DataReader::Read(std::string path)
 {
 	std::ifstream i(path);
-	/*
-	if (i.is_open())
-	{
-		std::string line;
-  		while (std::getline(i,line))
-		{
-			std::cout << line << '\n';
-		}
-		i.close();
-	}
-
-	return true;
-*/
 	if (!i.is_open())
 		return false;
 
 	i >> j;
 
-	return true;
+	bool rst = this->g.ReadFromJson(j);
+
+	return rst;
 }
 
 
@@ -31,4 +20,9 @@ void DataReader::DumpJson(std::string path)
 		return;
 	std::ofstream o(path);
 	o << std::setw(4) << j << std::endl;
+}
+
+Grid DataReader::GetFEMGrid()
+{
+	return this->g;
 }

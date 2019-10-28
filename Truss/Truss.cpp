@@ -4,6 +4,7 @@
 #include <iostream>
 
 #include <DataReader.h>
+#include <Grid.h>
 
 int main()
 {
@@ -11,6 +12,8 @@ int main()
 	DataReader dr;
 	dr.Read("Input/truss_1_data.json");
 	dr.DumpJson("Output/test.json");
+
+	
 
  }
 
