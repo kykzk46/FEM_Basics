@@ -75,7 +75,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\michael\Documents\GitHub\json\single_include;C:\Users\michael\Documents\GitHub\FEM_Basics\Truss;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\michael\Documents\GitHub\FEM_Basics\lib\include;C:\Users\michael\Documents\GitHub\FEM_Basics\Truss;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -153,13 +153,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="DataReader.cpp" />
-    <ClCompile Include="Grid.cpp" />
+    <ClCompile Include="JsonImporter.cpp" />
     <ClCompile Include="Truss.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\json\single_include\nlohmann\json.hpp" />
+    <ClInclude Include="..\lib\include\nlohmann\json.hpp" />
     <ClInclude Include="DataReader.h" />
-    <ClInclude Include="Grid.h" />
+    <ClInclude Include="GridParam.h" />
+    <ClInclude Include="JsonImporter.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

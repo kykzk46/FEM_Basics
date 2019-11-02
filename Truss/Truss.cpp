@@ -4,16 +4,18 @@
 #include <iostream>
 
 #include <DataReader.h>
-#include <Grid.h>
 
 int main()
 {
-    std::cout << "Read .json" << std::endl;
+    std::cout << "Start reading json file" << std::endl;
 	DataReader dr;
-	dr.Read("Input/truss_1_data.json");
-	dr.DumpJson("Output/test.json");
 
+	std::string path = "Input/truss_1_data.json";
 	
+	// Debug
+	//dr.DumpJson(path);
 
+	dr.Read(path);
+	GridParam grid = dr.GetFEMGrid();
  }
 

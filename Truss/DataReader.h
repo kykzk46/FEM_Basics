@@ -5,7 +5,7 @@
 #include <iomanip>
 
 #include <nlohmann/json.hpp>
-#include <Grid.h>	
+#include <JsonImporter.h>	
 
 using json = nlohmann::json;
 
@@ -14,9 +14,9 @@ class DataReader
 public:
 	bool Read(std::string path);
 	void DumpJson(std::string path);
-	Grid GetFEMGrid();
+	GridParam GetFEMGrid();
 private: 
 	json j;
-	Grid g;
+	GridParam g;
 };
 

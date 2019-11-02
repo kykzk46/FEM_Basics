@@ -8,7 +8,11 @@ bool DataReader::Read(std::string path)
 
 	i >> j;
 
-	bool rst = this->g.ReadFromJson(j);
+	JsonImporter importer;
+	bool rst = importer.ReadFromJson(j);
+	
+	// debug
+	importer.PrintParam();
 
 	return rst;
 }
@@ -22,7 +26,7 @@ void DataReader::DumpJson(std::string path)
 	o << std::setw(4) << j << std::endl;
 }
 
-Grid DataReader::GetFEMGrid()
+GridParam DataReader::GetFEMGrid()
 {
 	return this->g;
 }
