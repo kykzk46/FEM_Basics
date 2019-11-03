@@ -49,9 +49,10 @@ bool JsonImporter::ReadFromJson(json& j)
 
 		return true;
 	}
-	catch(json::exception& e)
+	catch (json::exception & e)
 	{
 		// output exception information
+		std::cout << "[Exception] from nlohmann/json.hpp " << std::endl;
 		std::cout << "message: " << e.what() << std::endl;
 		std::cout << "exception id: " << e.id << std::endl;
 		return false;
@@ -89,5 +90,54 @@ void JsonImporter::Fill2dArrayFromJson(int rowCount, int columnCount, nlohmann::
 
 void JsonImporter::PrintParam()
 {
-
+	try
+	{
+		std::cout << boost::format{ "nnd = %1% " } % gridParam.nnd << std::endl;
+		std::cout << boost::format{ "nel = %1% " } % gridParam.nel << std::endl;
+		std::cout << boost::format{ "nne = %1% " } % gridParam.nne << std::endl;
+		std::cout << boost::format{ "nodof = %1% " } % gridParam.nodof << std::endl;
+		std::cout << boost::format{ "eldof = %1% " } % gridParam.eldof << std::endl;
+		std::cout << "geom = " << std::endl;
+		std::cout << Print2dArray(gridParam.nnd, 2, gridParam.geom);
+		std::cout << "connec = " << std::endl;
+		std::cout << Print2dArray(gridParam.nnd, 2, gridParam.connec);
+		std::cout << "prop = " << std::endl;
+		std::cout << Print2dArray(gridParam.nel, 2, gridParam.prop);
+		std::cout << "nf = " << std::endl;
+		std::cout << Print2dArray(gridParam.nnd, gridParam.nodof, gridParam.nf);
+		std::cout << "load = " << std::endl;
+		std::cout << Print2dArray(gridParam.nnd, 2, gridParam.load);
+	}
+	catch (boost::exception & e)
+	{
+		std::cout << "[Exception] from boost " << std::endl;
+		std::cout << boost::diagnostic_information(e) << std::endl;
+	}
 }
+
+template<typename T>
+std::string JsonImporter::Print2dArray(int rowCount, int columnCount, T** ptr)
+{
+	std::string o; // output
+	o.append("[\r\n");
+	for (int i = 0; i < rowCount; ++i)
+	{
+		o.append(" [");
+		for (int j = 0; j < columnCount; ++j)
+		{
+			o.append(boost::str(boost::format{ "%1%" } % ptr[i][j]));
+			if (j < columnCount - 1)
+				o.append( ",");
+		}
+		o.append( "]");
+		if (i < rowCount - 1)
+			o.append( ",");
+		o.append("\r\n");
+	}
+	o.append( "]\r\n");
+
+	return o;
+}
+
+
+
