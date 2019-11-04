@@ -17,5 +17,7 @@ int main()
 
 	dr.Read(path);
 	GridParam grid = dr.GetFEMGrid();
+
+
  }
 

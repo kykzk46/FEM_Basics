@@ -41,6 +41,7 @@ bool JsonImporter::ReadFromJson(json& j)
 				}
 			}
 		}
+		gridParam.n = n;
 
 		// Loading
 		json j_load = j["load"];

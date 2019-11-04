@@ -12,5 +12,7 @@ public:
 	double** prop; // Geometrical properties
 	double** nf; // Boundary conditions
 	double** load; // load at node
+	
+	int n; // Number of unknown
 };
 
