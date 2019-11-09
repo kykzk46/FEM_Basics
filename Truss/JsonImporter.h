@@ -8,27 +8,26 @@
 #include <boost/format.hpp>
 #include <boost/exception/diagnostic_information.hpp> 
 #include <boost/exception_ptr.hpp> 
+#include <boost/numeric/ublas/matrix.hpp>
+#include <boost/numeric/ublas/io.hpp>
 #include <nlohmann/json.hpp>
 
 // My class
 #include<GridParam.h>
 
 using json = nlohmann::json;
+using namespace boost::numeric::ublas;
 
 class JsonImporter 
 {
 public:
-
-	GridParam gridParam;
-	bool ReadFromJson(json& j);
+	GridParam ReadFromJson(json& j);
 	void PrintParam();
+	bool isReadSuccess;
 
 private:
-	template <typename T>
-	void Initialize2dArray(int rowcount, int columnCount, T**& ptr);
-	template <typename T>
-	void Fill2dArrayFromJson(int rowCount, int columnCount, nlohmann::json j, T**& array2d);
-	template <typename T>
-	std::string Print2dArray(int rowCount, int columnCount, T** ptr);
+	GridParam gridParam;
+	template<typename T>
+	void FillMatrixFromJson(json j, T& matrix);
 };
 
