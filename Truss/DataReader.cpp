@@ -9,12 +9,12 @@ bool DataReader::Read(std::string path)
 	i >> j;
 
 	JsonImporter importer;
-	bool rst = importer.ReadFromJson(j);
+	this->gridParam = importer.ReadFromJson(j);
 	
 	// debug
 	importer.PrintParam();
 
-	return rst;
+	return importer.isReadSuccess;
 }
 
 
@@ -28,5 +28,5 @@ void DataReader::DumpJson(std::string path)
 
 GridParam DataReader::GetFEMGrid()
 {
-	return this->g;
+	return this->gridParam;
 }

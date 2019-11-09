@@ -1,6 +1,13 @@
 #pragma once
 
+#include <boost/exception_ptr.hpp> 
+#include <boost/numeric/ublas/matrix.hpp>
+#include <boost/numeric/ublas/io.hpp>
+
 #include<GridParam.h>
+
+using namespace boost::numeric::ublas;
+
 class Assembler
 {
 public:
@@ -9,5 +16,6 @@ public:
 
 private:
 	GridParam p;
+	matrix<double> truss_kl(int i, int numOfUnknown);
 };
 

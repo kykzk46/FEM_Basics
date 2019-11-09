@@ -4,6 +4,7 @@
 #include <iostream>
 
 #include <DataReader.h>
+#include <Assembler.h>
 
 int main()
 {
@@ -16,8 +17,12 @@ int main()
 	//dr.DumpJson(path);
 
 	dr.Read(path);
-	GridParam grid = dr.GetFEMGrid();
+	GridParam grid_param = dr.GetFEMGrid();
 
+	// Note: asm is an occupied name
+	Assembler fem_asm(grid_param);
+	fem_asm.Assemble();
+	
 
  }
 
