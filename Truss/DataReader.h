@@ -17,6 +17,6 @@ public:
 	GridParam GetFEMGrid();
 private: 
 	json j;
-	GridParam gridParam;
+	GridParam g;
 };
 
