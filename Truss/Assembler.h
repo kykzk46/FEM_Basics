@@ -1,5 +1,7 @@
 #pragma once
 
+#include <math.h>
+
 #include <boost/exception_ptr.hpp> 
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/io.hpp>
@@ -16,6 +18,11 @@ public:
 
 private:
 	GridParam p;
-	matrix<double> truss_kl(int i, int numOfUnknown);
+	int numUnk;
+	matrix<double> truss_kl(int i);
+	matrix<double> truss_C(int i);
+	vector<double> truss_g(int i);
+	void form_KK(matrix<double>& KK, matrix<double> kg, vector<double> g);
+	void form_truss_F(vector<double>& F);
 };
 
