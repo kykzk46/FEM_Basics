@@ -1,31 +1,45 @@
-#include "Assembler.h"
+#include "Solver.h"
 
 
-Assembler::Assembler(GridParam param)
+Solver::Solver(GridParam param)
 {
 	this->p = param;
-	this->numUnk = p.n + 1;
 }
 	
-void Assembler::Assemble()
+void Solver::Solve()
 {
-	matrix<double> KK(this->numUnk, this->numUnk);
-	vector<double> F(this->numUnk);
+	// Global stiffness matrix and force vector
+	matrix_d KK(p.n, p.n, .0);
+	vector_d F(p.n, .0);
 
 	for (int i = 0; i < p.nel; ++i)
 	{
-		matrix<double> kl = truss_kl(i); //local k
-		matrix<double> C = truss_C(i); 
-		matrix<double> C_t = trans(C);
-		matrix<double> kg = prod(C, kl, C_t);
-		vector<double> g =truss_g(i);
+		matrix_d kl = truss_kl(i); //local k
+		matrix_d C = truss_C(i); // local to global transformation matrix
+		matrix_d kg = prod(C, matrix_d(prod(kl, trans(C)))); // global k = C * k * trans(C)
+		
+		vector_i g = truss_g(i); // Steering vector
 
-		// Assemble global stiffness matrix
-		form_KK(KK, kg, g);
+		form_KK(KK, kg, g); // Assemble global stiffness matrix
+		
+		std::cout << "Elem id:" << i << std::endl;
+		std::cout << kl << std::endl;
+		std::cout << C << std::endl;
+		std::cout << kg << std::endl;
+		std::cout << g << std::endl;
+		std::cout << KK << std::endl;
 	}
+
+	// Form global force vector
+	form_truss_F(F);
+	std::cout << F << std::endl;
+ 
+	vector_d delta = LinearSolver_LU(KK, F);
+	std::cout << delta << std::endl;
+
 }
 
-matrix<double> Assembler::truss_kl(int elemId)
+matrix_d Solver::truss_kl(int elemId)
 {
 	// Retrive node id from element i
 	int node_1 = p.connec(elemId, 0);
@@ -45,7 +59,7 @@ matrix<double> Assembler::truss_kl(int elemId)
 	double A = p.prop(elemId, 1);
 
 	// Calculate element stiffness matrix in local coord.
-	matrix<double> kl(this->numUnk, this->numUnk);
+	matrix_d kl(p.eldof, p.eldof, .0);
 	double temp = E * A / L;
  	kl(0, 0) = temp;
  	kl(0, 2) = -temp;
@@ -55,7 +69,7 @@ matrix<double> Assembler::truss_kl(int elemId)
 	return kl;
 }
 
-matrix<double> Assembler::truss_C(int elemId)
+matrix_d Solver::truss_C(int elemId)
 {
 	// Retrive node id from element i
 	int node_1 = p.connec(elemId, 0);
@@ -82,7 +96,7 @@ matrix<double> Assembler::truss_C(int elemId)
 	}
 
 	// Construct the transformation matrix
-	matrix<double> C(this->numUnk, this->numUnk);
+	matrix_d C(p.eldof, p.eldof, .0);
 	C(0, 0) = cos(theta);
 	C(0, 1) = -sin(theta);
 	C(1, 0) = sin(theta);
@@ -96,22 +110,22 @@ matrix<double> Assembler::truss_C(int elemId)
 }
 
 // Form steering vector
-vector<double> Assembler::truss_g(int elemId)
+vector_d Solver::truss_g(int elemId)
 {
 	// Retrive node id from element i
 	int node_1 = p.connec(elemId, 0);
 	int node_2 = p.connec(elemId, 1);
 
-	vector<double> g(4);
+	vector_d g(4, .0);
 	g(0) = p.nf(node_1, 0);
 	g(1) = p.nf(node_1, 1);
-	g(2) = p.nf(node_1, 2);
-	g(3) = p.nf(node_1, 3);
+	g(2) = p.nf(node_2, 0);
+	g(3) = p.nf(node_2, 1);
 
 	return g;
 }
 
-void Assembler::form_KK(matrix<double>& KK, matrix<double> kg, vector<double> g)
+void Solver::form_KK(matrix_d& KK, matrix_d kg, vector_d g)
 {
 	for (int i = 0; i < p.eldof; ++i)
 	{
@@ -120,29 +134,44 @@ void Assembler::form_KK(matrix<double>& KK, matrix<double> kg, vector<double> g)
 			for (int j = 0; j < p.eldof; ++j)
 			{
 				if (g(j) != 0)
-					KK(g(i), g(j)) = KK(g(i), g(j)) + kg(i, j);
+				{
+					int rowIdx = g(i) - 1;
+					int colIdx = g(j) - 1;
+					KK(rowIdx, colIdx) = KK(rowIdx, colIdx) + kg(i, j);
+				}
 			}
 		}
 	}
 
 }
 
-void Assembler::form_truss_F(vector<double>& F)
+void Solver::form_truss_F(vector_d& F)
 {
-	for (int i = 0; i < p.nnd; ++i)
+	for (size_t i = 0; i < p.nnd; ++i)
 	{
-		for (int j = 0; j < p.nodof; ++j)
+		for (size_t j = 0; j < p.nodof; ++j)
 		{
 			if (p.nf(i, j) != 0)
 			{
-				F(p.nf(i, j)) = p.load(i, j);
+				size_t idx = p.nf(i, j) - 1;
+				F(idx) = p.load(i, j);
 			}
 		}
 	}
 }
 
+// Solve Ax = b
+vector_d Solver::LinearSolver_LU(matrix_d A, vector_d b)
+{
+	using namespace boost::numeric::ublas;
 
+	lu_factorize(A);
 
+	// Solve Ax = b and write result to b
+	lu_substitute<const matrix_d, vector_d>(A, b);
+
+	return vector_d (b);
+}
 
 
 

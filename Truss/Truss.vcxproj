@@ -153,14 +153,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="DataReader.cpp" />
-    <ClCompile Include="Assembler.cpp" />
+    <ClCompile Include="Solver.cpp" />
     <ClCompile Include="JsonImporter.cpp" />
     <ClCompile Include="Truss.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\lib\include\nlohmann\json.hpp" />
     <ClInclude Include="DataReader.h" />
-    <ClInclude Include="Assembler.h" />
+    <ClInclude Include="Solver.h" />
     <ClInclude Include="GridParam.h" />
     <ClInclude Include="JsonImporter.h" />
   </ItemGroup>

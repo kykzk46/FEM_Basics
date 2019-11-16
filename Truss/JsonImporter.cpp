@@ -8,7 +8,7 @@ GridParam JsonImporter::ReadFromJson(json& j)
 		j.at("nel").get_to(gridParam.nel); // Num. of elem
 		j.at("nne").get_to(gridParam.nne); // Num of nodes per elem
 		j.at("nodof").get_to(gridParam.nodof); // Num. of deg of freedom per node
-		gridParam.eldof = gridParam.nne * gridParam.nodof;
+		gridParam.eldof = gridParam.nne * gridParam.nodof; // Num
 
 		// Nodes coordinates X and Y
 		json j_geom = j["geom"];

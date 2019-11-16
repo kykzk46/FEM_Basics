@@ -4,7 +4,7 @@
 #include <iostream>
 
 #include <DataReader.h>
-#include <Assembler.h>
+#include <Solver.h>
 
 int main()
 {
@@ -19,9 +19,8 @@ int main()
 	dr.Read(path);
 	GridParam grid_param = dr.GetFEMGrid();
 
-	// Note: asm is an occupied name
-	Assembler fem_asm(grid_param);
-	fem_asm.Assemble();
+	Solver s(grid_param);
+	s.Solve();
 	
 
  }
