@@ -35,7 +35,55 @@ void Solver::Solve()
 	std::cout << F << std::endl;
  
 	vector_d delta = LinearSolver_LU(KK, F);
+	std::cout << "delta" << std::endl;
 	std::cout << delta << std::endl;
+
+	// Extract nodal displayment
+	matrix_d node_disp = matrix_d(p.nnd,p.nodof); //local k
+	for (int i = 0; i < p.nnd; ++i)
+	{
+		for (int j = 0; j < p.nodof; ++j)
+		{
+			node_disp(i, j) = 0;
+			if (p.nf(i, j) != 0)
+			{
+				node_disp(i, j) = delta(p.nf(i, j) - 1); // important
+			}
+		}
+	}
+
+	// Calculate the force acting on each element
+	// in local coordinates 
+	for (int i = 0; i < p.nel; ++i)
+	{
+		matrix_d kl = truss_kl(i); //local k
+		matrix_d C = truss_C(i); // local to global transformation matrix
+		matrix_d kg = prod(C, matrix_d(prod(kl, trans(C)))); // global k = C * k * trans(C)
+
+		vector_i g = truss_g(i); // Steering vector
+		vector_d edg = vector_i(p.eldof); // Element displacement vector in global coordinates
+		for (int j = 0; j < p.nel; ++j)
+		{
+			if (g(j) == 0)
+				edg(j) = 0;
+			else
+				edg(j) = delta(g(j));
+		}
+
+		vector_d fg = prod(kg, vector_d(trans(edg))); // force vector global
+		std::cout << "Force global" << std::endl;
+		std::cout << fg << std::endl;
+
+		vector_d fl = prod(matrix_d(trans(C)), fg); // force vector local
+		std::cout << "Force local" << std::endl;
+		std::cout << fl << std::endl;
+
+
+	}
+
+	
+
+
 
 }
 
