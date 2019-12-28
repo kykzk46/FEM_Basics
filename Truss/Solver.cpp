@@ -45,9 +45,9 @@ void Solver::Solve()
 		for (int j = 0; j < p.nodof; ++j)
 		{
 			node_disp(i, j) = 0;
-			if (p.nf(i, j) != 0)
+			if (p.nf(i, j) != -1)
 			{
-				node_disp(i, j) = delta(p.nf(i, j) - 1); // important
+				node_disp(i, j) = delta(p.nf(i, j)); // important
 			}
 		}
 	}
@@ -64,7 +64,7 @@ void Solver::Solve()
 		vector_d edg = vector_i(p.eldof); // Element displacement vector in global coordinates
 		for (int j = 0; j < p.nel; ++j)
 		{
-			if (g(j) == 0)
+			if (g(j) == -1)
 				edg(j) = 0;
 			else
 				edg(j) = delta(g(j));
@@ -77,14 +77,7 @@ void Solver::Solve()
 		vector_d fl = prod(matrix_d(trans(C)), fg); // force vector local
 		std::cout << "Force local" << std::endl;
 		std::cout << fl << std::endl;
-
-
 	}
-
-	
-
-
-
 }
 
 matrix_d Solver::truss_kl(int elemId)
@@ -177,20 +170,19 @@ void Solver::form_KK(matrix_d& KK, matrix_d kg, vector_d g)
 {
 	for (int i = 0; i < p.eldof; ++i)
 	{
-		if (g(i) != 0)
+		if (g(i) != -1)
 		{
 			for (int j = 0; j < p.eldof; ++j)
 			{
-				if (g(j) != 0)
+				if (g(j) != -1)
 				{
-					int rowIdx = g(i) - 1;
-					int colIdx = g(j) - 1;
+					int rowIdx = g(i);
+					int colIdx = g(j);
 					KK(rowIdx, colIdx) = KK(rowIdx, colIdx) + kg(i, j);
 				}
 			}
 		}
 	}
-
 }
 
 void Solver::form_truss_F(vector_d& F)
@@ -199,9 +191,9 @@ void Solver::form_truss_F(vector_d& F)
 	{
 		for (size_t j = 0; j < p.nodof; ++j)
 		{
-			if (p.nf(i, j) != 0)
+			if (p.nf(i, j) != -1)
 			{
-				size_t idx = p.nf(i, j) - 1;
+				size_t idx = p.nf(i, j);
 				F(idx) = p.load(i, j);
 			}
 		}

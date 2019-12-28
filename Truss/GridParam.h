@@ -20,7 +20,7 @@ public:
 	matrix_d geom; // Nodes coord. (X,Y)
 	matrix_i connec; // Element connectivity
 	matrix_d prop; // Geometrical properties
-	matrix_d nf; // Boundary conditions
+	matrix_i nf; // Degree of freedom
 	matrix_d load; // load at node
 	
 	int eldof; // Number of degrees of freedom per element (size of local stiffness matrix)

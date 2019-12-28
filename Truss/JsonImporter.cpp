@@ -26,23 +26,26 @@ GridParam JsonImporter::ReadFromJson(json& j)
 		gridParam.prop = matrix<double>(gridParam.nel, 2);
 		FillMatrixFromJson(j_prop, gridParam.prop);
 
-		// Boundary conditions
+		// Counting the total degree of freedom
 		json j_nf = j["nf"];
-		gridParam.nf = matrix<double>(gridParam.nnd, gridParam.nodof);
-		FillMatrixFromJson(j_nf, gridParam.nf);
+		matrix_i nf_local = matrix_i(gridParam.nnd, gridParam.nodof);
+		FillMatrixFromJson(j_nf, nf_local);
+		gridParam.nf = matrix_i(gridParam.nnd, gridParam.nodof, -1);
 		int n = 0;
 		for (int i = 0; i < gridParam.nnd; ++i)
 		{
 			for (int j = 0; j < gridParam.nodof; ++j)
 			{
-				if (gridParam.nf(i, j) != 0)
+				if (nf_local(i, j) != 0)
 				{
-					++n;
 					gridParam.nf(i, j) = n;
+					++n;
 				}
 			}
 		}
-		gridParam.n = n;
+		// Total number of unknown = total number of freedom + 1
+		// So the last ++n is necessory
+		gridParam.n = n; 
 
 		// Loading
 		json j_load = j["load"];
