@@ -28,6 +28,7 @@ void Solver::Solve()
 		std::cout << kg << std::endl;
 		std::cout << g << std::endl;
 		std::cout << KK << std::endl;
+		std::cout << std::endl;
 	}
 
 	// Form global force vector
@@ -62,7 +63,7 @@ void Solver::Solve()
 
 		vector_i g = truss_g(i); // Steering vector
 		vector_d edg = vector_i(p.eldof); // Element displacement vector in global coordinates
-		for (int j = 0; j < p.nel; ++j)
+		for (int j = 0; j < p.eldof; ++j)
 		{
 			if (g(j) == -1)
 				edg(j) = 0;
@@ -70,6 +71,7 @@ void Solver::Solve()
 				edg(j) = delta(g(j));
 		}
 
+		std::cout << "Elem id:" << i << std::endl;
 		vector_d fg = prod(kg, vector_d(trans(edg))); // force vector global
 		std::cout << "Force global" << std::endl;
 		std::cout << fg << std::endl;
@@ -77,6 +79,7 @@ void Solver::Solve()
 		vector_d fl = prod(matrix_d(trans(C)), fg); // force vector local
 		std::cout << "Force local" << std::endl;
 		std::cout << fl << std::endl;
+		std::cout << std::endl;
 	}
 }
 

@@ -11,7 +11,10 @@ int main()
     std::cout << "Start reading json file" << std::endl;
 	DataReader dr;
 
-	std::string path = "Input/truss_1_data.json";
+	// Input file for problem 1
+	// std::string path = "Input/truss_1_data.json";
+	// Input file for problem 2
+	std::string path = "Input/truss_2_data.json";
 	
 	// Debug
 	//dr.DumpJson(path);
@@ -21,7 +24,5 @@ int main()
 
 	Solver s(grid_param);
 	s.Solve();
-	
-
  }
 

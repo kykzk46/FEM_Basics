@@ -18,7 +18,7 @@ GridParam JsonImporter::ReadFromJson(json& j)
 
 		// Element connectivity
 		json j_connec = j["connec"];
-		gridParam.connec = matrix<int>(gridParam.nnd, 2);
+		gridParam.connec = matrix<int>(gridParam.nel, 2);
 		FillMatrixFromJson(j_connec, gridParam.connec);
 
 		// Geometrical properties 
